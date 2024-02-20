@@ -1,11 +1,12 @@
 import { InLoginObject, OutLoginDataObject, OutLoginObject } from '../utilities/types';
-import { randomNum } from '../utilities/data';
+import { getRandomNumber } from '../utilities/data';
+
 export const loginHandler = (inLoginObject: InLoginObject) => {
     const inName: string = JSON.parse(inLoginObject.data).name;
-
+    const index: number = getRandomNumber();
     const outLoginDataObject: OutLoginDataObject = {
         name: inName,
-        index: randomNum,
+        index: index,
         error: inName ? false : true,
         errorText: 'Name is not found',
     };
@@ -15,5 +16,5 @@ export const loginHandler = (inLoginObject: InLoginObject) => {
     const outLoginObject: OutLoginObject = { ...inLoginObject, data: outLoginDataJSON };
     const outLoginJSON: string = JSON.stringify(outLoginObject);
 
-    return outLoginJSON;
+    return {outLoginJSON, outLoginDataObject};
 };

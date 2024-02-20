@@ -2,7 +2,7 @@ import crypto from 'crypto';
 
 export const randomID: string = crypto.randomUUID();
 
-function getRandomNumber(): number {
+export function getRandomNumber(): number {
   return Math.floor(Math.random() * 999) + 1;
 }
 

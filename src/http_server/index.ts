@@ -4,7 +4,8 @@ import * as http from 'http';
 import WebSocket from 'ws';
 import { loginHandler } from '../commands/loginHandler';
 import { randomID } from '../utilities/data';
-import { InMessageObject } from '../utilities/types';
+import { InMessageObject, OutLoginDataObject, OutUpdRoomDataObject } from '../utilities/types';
+import { updateRoom } from '../commands/roomHandler';
 
 export const httpServer = http.createServer(function (req, res) {
     const __dirname = path.resolve(path.dirname(''));
@@ -28,12 +29,24 @@ wsServer.on('connection', (ws: WebSocket) => {
         const inMessageJSON: string = message.toString('utf-8');
         const inMessageObject: InMessageObject = JSON.parse(inMessageJSON);
         const type: string = inMessageObject.type;
-
+        const roomsDataArr: OutUpdRoomDataObject[] = [];
+        const roomUsers: OutLoginDataObject[] = [];
         switch (type) {
             case 'reg':
-                const outMessageJSON = loginHandler(inMessageObject);
-                ws.send(outMessageJSON);
-                console.log('outmessage: ' + outMessageJSON);
+                const outLoginMessageJSON: string = loginHandler(inMessageObject).outLoginJSON;
+                ws.send(outLoginMessageJSON);
+
+                const userData: OutLoginDataObject = loginHandler(inMessageObject).outLoginDataObject;
+                const userInfo: OutLoginDataObject | [] = roomUsers[roomUsers.length - 1] || [] ;
+                
+                const outUpdRoomRegMessageJSON = updateRoom(userInfo, roomsDataArr);
+                ws.send(outUpdRoomRegMessageJSON);
+                roomUsers.push(userData);
+                break;
+            case 'create_room':
+                const user = roomUsers[roomUsers.length - 1] as OutLoginDataObject;
+                const outUpdRoomCRMessageJSON: string = updateRoom(user, roomsDataArr);
+                ws.send(outUpdRoomCRMessageJSON as string);
                 break;
             default:
                 console.log('Not found err');
