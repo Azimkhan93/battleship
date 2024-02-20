@@ -1,4 +1,4 @@
-export type InLoginObject = {
+export type InMessageObject = {
     type: string;
     data: string;
     id: number;
@@ -11,8 +11,7 @@ export type OutLoginDataObject = {
     errorText: string;
 };
 
-export type OutLoginObject = InLoginObject;
-export type InMessageObject = InLoginObject;
+export type OutLoginObject = InMessageObject;
 
 type UserDataForRoom = {
     name: string;
@@ -27,11 +26,12 @@ export type OutUpdRoomDataObject = {
 export type OutUpdRoomObject = {
     type: string;
     data: string | string[];
-    id: number
+    id: number;
 };
 
-// export type outUpdRoomDataJSON ={
-//   type: "update_room",
-//   data: 
-//   id: 0,
-// }
+export type OutCreateGameDataObject = {
+    idGame: number;
+    idPlayer: number;
+};
+
+export type OutCreateGameObject = InMessageObject;
