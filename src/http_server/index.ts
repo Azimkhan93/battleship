@@ -22,6 +22,8 @@ export const httpServer = http.createServer(function (req, res) {
 });
 
 const wsServer = new WebSocket.Server({ port: 3000 });
+const roomsDataArr: OutUpdRoomDataObject[] = [];
+const roomUsers: OutLoginDataObject[] = [];
 
 wsServer.on('connection', (ws: WebSocket) => {
     ws.on('message', (message: WebSocket.RawData) => {
@@ -29,23 +31,24 @@ wsServer.on('connection', (ws: WebSocket) => {
         const inMessageJSON: string = message.toString('utf-8');
         const inMessageObject: InMessageObject = JSON.parse(inMessageJSON);
         const type: string = inMessageObject.type;
-        const roomsDataArr: OutUpdRoomDataObject[] = [];
-        const roomUsers: OutLoginDataObject[] = [];
+
         switch (type) {
             case 'reg':
-                const outLoginMessageJSON: string = loginHandler(inMessageObject).outLoginJSON;
+                const loginResp: { outLoginJSON: string; outLoginDataObject: OutLoginDataObject } =
+                    loginHandler(inMessageObject);
+
+                const outLoginMessageJSON: string = loginResp.outLoginJSON;
                 ws.send(outLoginMessageJSON);
 
-                const userData: OutLoginDataObject = loginHandler(inMessageObject).outLoginDataObject;
-                const userInfo: OutLoginDataObject | [] = roomUsers[roomUsers.length - 1] || [] ;
-                
-                const outUpdRoomRegMessageJSON = updateRoom(userInfo, roomsDataArr);
+                const userData: OutLoginDataObject = loginResp.outLoginDataObject;
+
+                const outUpdRoomRegMessageJSON = updateRoom(roomUsers, roomsDataArr);
                 ws.send(outUpdRoomRegMessageJSON);
+
                 roomUsers.push(userData);
                 break;
             case 'create_room':
-                const user = roomUsers[roomUsers.length - 1] as OutLoginDataObject;
-                const outUpdRoomCRMessageJSON: string = updateRoom(user, roomsDataArr);
+                const outUpdRoomCRMessageJSON: string = updateRoom(roomUsers, roomsDataArr);
                 ws.send(outUpdRoomCRMessageJSON as string);
                 break;
             default:

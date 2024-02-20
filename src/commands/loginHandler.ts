@@ -12,9 +12,11 @@ export const loginHandler = (inLoginObject: InLoginObject) => {
     };
 
     const outLoginDataJSON: string = JSON.stringify(outLoginDataObject);
-
+    console.log('userdata1 ', outLoginDataObject)
     const outLoginObject: OutLoginObject = { ...inLoginObject, data: outLoginDataJSON };
+    console.log('userdata2 ', outLoginDataObject)
     const outLoginJSON: string = JSON.stringify(outLoginObject);
+    console.log('userdata3 ', outLoginDataObject)
 
     return {outLoginJSON, outLoginDataObject};
 };
