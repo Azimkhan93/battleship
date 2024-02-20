@@ -1,5 +1,5 @@
-import { InLoginObject, OutLoginDataObject, OutLoginObject } from '../utilities/types';
-import { getRandomNumber } from '../utilities/data';
+import { InLoginObject, OutLoginDataObject, OutLoginObject } from '../../utilities/types';
+import { getRandomNumber } from '../../utilities/data';
 
 export const loginHandler = (inLoginObject: InLoginObject) => {
     const inName: string = JSON.parse(inLoginObject.data).name;

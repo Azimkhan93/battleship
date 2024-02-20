@@ -2,10 +2,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as http from 'http';
 import WebSocket from 'ws';
-import { loginHandler } from '../commands/loginHandler';
+import { loginHandler } from '../commands/player/loginHandler';
 import { randomID } from '../utilities/data';
 import { InMessageObject, OutLoginDataObject, OutUpdRoomDataObject } from '../utilities/types';
-import { updateRoom } from '../commands/roomHandler';
+import { updateHandler } from '../commands/room/updateHandler';
 
 export const httpServer = http.createServer(function (req, res) {
     const __dirname = path.resolve(path.dirname(''));
@@ -42,13 +42,13 @@ wsServer.on('connection', (ws: WebSocket) => {
 
                 const userData: OutLoginDataObject = loginResp.outLoginDataObject;
 
-                const outUpdRoomRegMessageJSON = updateRoom(roomUsers, roomsDataArr);
+                const outUpdRoomRegMessageJSON = updateHandler(roomUsers, roomsDataArr);
                 ws.send(outUpdRoomRegMessageJSON);
 
                 roomUsers.push(userData);
                 break;
             case 'create_room':
-                const outUpdRoomCRMessageJSON: string = updateRoom(roomUsers, roomsDataArr);
+                const outUpdRoomCRMessageJSON: string = updateHandler(roomUsers, roomsDataArr);
                 ws.send(outUpdRoomCRMessageJSON as string);
                 break;
             default:

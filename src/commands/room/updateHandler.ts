@@ -1,8 +1,7 @@
-import { getRandomNumber } from '../utilities/data';
-import { OutLoginDataObject, OutUpdRoomDataObject, OutUpdRoomObject } from '../utilities/types';
-// export const createRoom = () => {};
+import { getRandomNumber } from '../../utilities/data';
+import { OutLoginDataObject, OutUpdRoomDataObject, OutUpdRoomObject } from '../../utilities/types';
 
-export const updateRoom = (roomUsers: OutLoginDataObject[], roomsDataArr: OutUpdRoomDataObject[]) => {
+export const updateHandler = (roomUsers: OutLoginDataObject[], roomsDataArr: OutUpdRoomDataObject[]) => {
     const roomId: number = getRandomNumber();
     let userData: OutLoginDataObject | null;
     
