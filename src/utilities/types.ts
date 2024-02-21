@@ -4,6 +4,8 @@ export type InMessageObject = {
     id: number;
 };
 
+export type OutMessageObject = InMessageObject;
+
 export type OutLoginDataObject = {
     name: string;
     index: number;
@@ -11,7 +13,6 @@ export type OutLoginDataObject = {
     errorText: string;
 };
 
-export type OutLoginObject = InMessageObject;
 
 type UserDataForRoom = {
     name: string;
@@ -34,4 +35,9 @@ export type OutCreateGameDataObject = {
     idPlayer: number;
 };
 
-export type OutCreateGameObject = InMessageObject;
+
+export type OutUpdWinnerDataObject = {
+    name: string;
+    wins: number;
+}
+

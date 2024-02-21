@@ -1,4 +1,4 @@
-import { InMessageObject, OutLoginDataObject, OutLoginObject } from '../../utilities/types';
+import { InMessageObject, OutLoginDataObject, OutMessageObject } from '../../utilities/types';
 import { getRandomNumber } from '../../utilities/data';
 
 export const loginHandler = (inLoginObject: InMessageObject) => {
@@ -12,7 +12,7 @@ export const loginHandler = (inLoginObject: InMessageObject) => {
     };
 
     const outLoginDataJSON: string = JSON.stringify(outLoginDataObject);
-    const outLoginObject: OutLoginObject = { ...inLoginObject, data: outLoginDataJSON };
+    const outLoginObject: OutMessageObject = { ...inLoginObject, data: outLoginDataJSON };
     const outLoginJSON: string = JSON.stringify(outLoginObject);
 
     return {outLoginJSON, outLoginDataObject};

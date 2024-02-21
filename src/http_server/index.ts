@@ -1,11 +1,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as http from 'http';
-import WebSocket from 'ws';
+import WebSocket, { WebSocketServer } from 'ws';
 import { loginHandler } from '../commands/player/loginHandler';
 import { randomID } from '../utilities/data';
-import { InMessageObject, OutLoginDataObject, OutUpdRoomDataObject } from '../utilities/types';
-import { updateHandler } from '../commands/room/updateHandler';
+import { InMessageObject, OutLoginDataObject, OutUpdRoomDataObject, OutUpdWinnerDataObject } from '../utilities/types';
+import { updateRoomHandler } from '../commands/room/updateRoomHandler';
+import { updateWinnersHandler } from '../commands/room/updateWinnersHandler';
 import { addUserHandler } from '../commands/room/addUserHandler';
 
 export const httpServer = http.createServer(function (req, res) {
@@ -22,19 +23,25 @@ export const httpServer = http.createServer(function (req, res) {
     });
 });
 
-const wsServer = new WebSocket.Server({ port: 3000 });
+const wsServer = new WebSocketServer({ port: 3000 });
 let roomsDataArr: OutUpdRoomDataObject[] = [];
 const roomUsers: OutLoginDataObject[] = [];
-
+const winnerData: OutUpdWinnerDataObject[] = []
 roomsDataArr = roomsDataArr.filter((item) => item.roomUsers.length < 2);
 
-wsServer.on('connection', (ws: WebSocket) => {
-    ws.on('message', (message: WebSocket.RawData) => {
+wsServer.on('connection', (ws) => {
+    ws.on('message', (message) => {
         console.log('New client connected', randomID);
         const inMessageJSON: string = message.toString('utf-8');
         const inMessageObject: InMessageObject = JSON.parse(inMessageJSON);
         const type: string = inMessageObject.type;
-
+        // ws.on('message', function message(data, isBinary) {
+        //     wsServer.clients.forEach(function each(client) {
+        //       if (client.readyState === WebSocket.OPEN) {
+        //         client.send(data, { binary: isBinary });
+        //       }
+        //     });
+        //   });
         switch (type) {
             case 'reg':
                 const loginResp: { outLoginJSON: string; outLoginDataObject: OutLoginDataObject } =
@@ -45,13 +52,16 @@ wsServer.on('connection', (ws: WebSocket) => {
 
                 const userData: OutLoginDataObject = loginResp.outLoginDataObject;
 
-                const outUpdRoomRegMessageJSON = updateHandler(roomUsers, roomsDataArr);
+                const outUpdRoomRegMessageJSON = updateRoomHandler(roomUsers, roomsDataArr);
+                const outUpdWinnersMessageJSON = updateWinnersHandler(inMessageObject, winnerData)
+
                 ws.send(outUpdRoomRegMessageJSON);
+                ws.send(outUpdWinnersMessageJSON);
 
                 roomUsers.push(userData);
                 break;
             case 'create_room':
-                const outUpdRoomCRMessageJSON: string = updateHandler(roomUsers, roomsDataArr);
+                const outUpdRoomCRMessageJSON: string = updateRoomHandler(roomUsers, roomsDataArr);
                 ws.send(outUpdRoomCRMessageJSON as string);
                 break;
             case 'add_user_to_room':
