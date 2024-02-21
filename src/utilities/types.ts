@@ -13,7 +13,6 @@ export type OutLoginDataObject = {
     errorText: string;
 };
 
-
 type UserDataForRoom = {
     name: string;
     index: number;
@@ -35,9 +34,30 @@ export type OutCreateGameDataObject = {
     idPlayer: number;
 };
 
-
 export type OutUpdWinnerDataObject = {
     name: string;
     wins: number;
-}
+};
 
+export type Position = {
+    x: number;
+    y: number;
+};
+
+export type Ship = {
+    position: Position;
+    direction: boolean;
+    length: number;
+    type: 'small' | 'medium' | 'large' | 'huge';
+};
+
+export type InShips = {
+    gameId: number;
+    ships: Ship[];
+    indexPlayer: number;
+};
+
+export type OutStartGameDataObject = {
+    ships: Ship[];
+    currentPlayerIndex: number;
+};

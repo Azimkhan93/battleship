@@ -2,12 +2,13 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as http from 'http';
 import WebSocket, { WebSocketServer } from 'ws';
-import { loginHandler } from '../commands/player/loginHandler';
+import { loginHandler } from '../commands/personal/loginHandler';
 import { randomID } from '../utilities/data';
 import { InMessageObject, OutLoginDataObject, OutUpdRoomDataObject, OutUpdWinnerDataObject } from '../utilities/types';
-import { updateRoomHandler } from '../commands/room/updateRoomHandler';
-import { updateWinnersHandler } from '../commands/room/updateWinnersHandler';
-import { addUserHandler } from '../commands/room/addUserHandler';
+import { updateRoomHandler } from '../commands/all/updateRoomHandler';
+import { updateWinnersHandler } from '../commands/all/updateWinnersHandler';
+import { createGameHandler } from '../commands/gameRoom/createGameHandler';
+import { startGameHandler } from '../commands/gameRoom/startGameHandler';
 
 export const httpServer = http.createServer(function (req, res) {
     const __dirname = path.resolve(path.dirname(''));
@@ -65,10 +66,14 @@ wsServer.on('connection', (ws) => {
                 ws.send(outUpdRoomCRMessageJSON as string);
                 break;
             case 'add_user_to_room':
-                const outCreateGameJSON = addUserHandler(inMessageObject, roomsDataArr);
+                const outCreateGameJSON = createGameHandler(inMessageObject, roomsDataArr);
                 console.log('outCreateGameJSON ', outCreateGameJSON);
                 ws.send(outCreateGameJSON);
 
+                break;
+            case 'add_ships':
+                const outStartGameJSON = startGameHandler(inMessageObject)
+                ws.send(outStartGameJSON);
                 break;
             default:
                 console.log('Not found err');

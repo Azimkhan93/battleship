@@ -1,6 +1,6 @@
 import {  InMessageObject, OutCreateGameDataObject, OutMessageObject, OutUpdRoomDataObject } from '../../utilities/types';
 import { getRandomNumber } from '../../utilities/data';
-export const addUserHandler = (inAddUserObject: InMessageObject, roomsDataArr: OutUpdRoomDataObject[]) => {
+export const createGameHandler = (inAddUserObject: InMessageObject, roomsDataArr: OutUpdRoomDataObject[]) => {
 const inIndexRoom: number = JSON.parse(inAddUserObject.data).indexRoom;
 const idGame: number = getRandomNumber();
 const idPlayer: number = getRandomNumber();

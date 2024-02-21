@@ -5,7 +5,7 @@ export const updateRoomHandler = (roomUsers: OutLoginDataObject[], roomsDataArr:
     const roomId: number = getRandomNumber();
     let userData: OutLoginDataObject | null;
     
-    if (roomUsers.length !== 0) {
+    if (roomUsers.length == 0) {
         userData = roomUsers[roomUsers.length - 1];
         const outUpdRoomDataObject: OutUpdRoomDataObject = {
             roomId: roomId,
