@@ -1,13 +1,25 @@
 import { getRandomNumber } from '../../utilities/data';
-import { OutLoginDataObject, OutUpdRoomDataObject, OutUpdRoomObject } from '../../utilities/types';
+import { OutUserData, RoomData, OutUpdRoomObject, RoomUser } from '../../utilities/types';
 
-export const updateRoomHandler = (roomUsers: OutLoginDataObject[], roomsDataArr: OutUpdRoomDataObject[]) => {
-    const roomId: number = getRandomNumber();
-    let userData: OutLoginDataObject | null;
-    
-    if (roomUsers.length == 0) {
-        userData = roomUsers[roomUsers.length - 1];
-        const outUpdRoomDataObject: OutUpdRoomDataObject = {
+export const updateRoomHandler = (
+    loggedUsers: OutUserData[],
+    roomsDataArr: RoomData[],
+    roomUsers: RoomUser[],
+    roomId: number | null
+) => {
+    roomsDataArr = roomsDataArr.filter((roomData) => {
+        roomData.roomUsers.length === 2;
+    });
+
+    roomUsers = [];
+
+    roomUsers = roomsDataArr.flatMap((roomData) => roomData.roomUsers);
+    let userData: OutUserData | null;
+
+    userData = loggedUsers[loggedUsers.length - 1];
+
+    if (typeof roomId === 'number') {
+        const outUpdRoomDataObject: RoomData = {
             roomId: roomId,
             roomUsers: [
                 {
@@ -17,9 +29,8 @@ export const updateRoomHandler = (roomUsers: OutLoginDataObject[], roomsDataArr:
             ],
         };
         roomsDataArr.push(outUpdRoomDataObject);
-    } else {
-        userData = null;
     }
+
     console.log('roomdataarr: ', roomsDataArr);
     const outUpdRoomDataArrJSON: string = JSON.stringify(roomsDataArr);
     const outUpdRoomObject: OutUpdRoomObject = { type: 'update_room', data: outUpdRoomDataArrJSON, id: 0 };

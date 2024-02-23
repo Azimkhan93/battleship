@@ -6,22 +6,15 @@ export type InMessageObject = {
 
 export type OutMessageObject = InMessageObject;
 
-export type OutLoginDataObject = {
+export type OutUserData = {
     name: string;
     index: number;
     error: boolean;
     errorText: string;
 };
 
-type UserDataForRoom = {
-    name: string;
-    index: number;
-};
 
-export type OutUpdRoomDataObject = {
-    roomId: number;
-    roomUsers: UserDataForRoom[];
-};
+
 
 export type OutUpdRoomObject = {
     type: string;
@@ -61,3 +54,30 @@ export type OutStartGameDataObject = {
     ships: Ship[];
     currentPlayerIndex: number;
 };
+
+export type RoomUser = {
+    name: string;
+    index: number;
+};
+
+export type RoomData = {
+    roomId: number;
+    roomUsers: RoomUser[];
+};
+
+export type UserData = {
+    name: string;
+    password: string
+}
+
+export type UserDataDB = {
+    name: string,
+    password: string,
+    index: number,
+    socket: string | null,
+}
+
+export type DB = {
+    users: UserDataDB[];
+    rooms: RoomData[]
+}
