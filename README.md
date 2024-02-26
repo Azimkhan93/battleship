@@ -12,6 +12,7 @@
 `npm run start:dev`
 
 * App served @ `http://localhost:8181` with nodemon
+* Open postman and connect to `ws://localhost:3000`
 
 **Production**
 
