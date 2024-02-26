@@ -17,14 +17,13 @@ import {createGameCommand} from './commands/gameRoom/create-game-command';
 import {startGameCommand} from './commands/gameRoom/start-game-command';
 import {db} from '../db/data';
 import {EVENT_TYPES} from "../constants/event-type.constant";
-import {sendAll} from "./utils/ws-send";
+import {sendAll, sendRoom} from "./utils/ws-send";
 import {createRoomCommand} from "./commands/all/create-room-command";
 import {addUserToRoomCommand} from "./commands/all/add-user-to-room-command";
 import {userDb} from "../db/user.db";
-
-let roomUsers: RoomUserType[] = [];
-const winnerData: OutUpdWinnerDataObject[] = [];
-let roomId: number | null = null;
+import {roomDb} from "../db/room.db";
+import {roomWsDb} from "../db/room-ws.db";
+import {socketWsDb} from "../db/socket-ws.db";
 
 export const createWsServer = () => {
     const wsServer = new WebSocketServer({port: 3000});
@@ -45,34 +44,56 @@ export const createWsServer = () => {
                     const loginRes = loginCommand(inMessageData, socketId);
                     ws.send(loginRes);
 
-                    const roomRes = updateRoomCommand();
-                    sendAll(wsServer, roomRes)
+                    const updateRoomRes = updateRoomCommand();
+                    const updateWinnersRes = updateWinnersCommand();
+
+                    sendAll(wsServer, updateRoomRes);
+                    sendAll(wsServer, updateWinnersRes);
+
                     break;
                 }
-                case EVENT_TYPES.UPDATE_ROOM: {
-                    break;
-                }
-                case EVENT_TYPES.UPDATE_WINNERS: {
-                    break;
-                }
+
                 case EVENT_TYPES.CREATE_ROOM: {
                     const user = userDb.getUserBySocketId(socketId);
-                    createRoomCommand(user);
-                    const roomRes = updateRoomCommand();
-                    sendAll(wsServer, roomRes)
+                    const roomId = createRoomCommand(user);
+
+                    if(roomId) {
+                        roomWsDb.addWebSocketClientToRoom(roomId, ws)
+                    }
+                    socketWsDb.addWebSocketClient(socketId, ws);
+
+                    const updateRoomRes = updateRoomCommand();
+                    sendAll(wsServer, updateRoomRes);
 
                     break;
                 }
                 case EVENT_TYPES.ADD_USER_TO_ROOM: {
                     const user = userDb.getUserBySocketId(socketId);
                     const inMessageData = JSON.parse(inMessageObject.data);
-                    addUserToRoomCommand(inMessageData.indexRoom, user);
+                    const roomId = inMessageData.indexRoom;
+
+                    addUserToRoomCommand(roomId, user);
+
+                    roomWsDb.addWebSocketClientToRoom(roomId, ws);
+                    socketWsDb.addWebSocketClient(socketId, ws);
+
                     const roomRes = updateRoomCommand();
                     sendAll(wsServer, roomRes);
 
-                    break;
-                }
-                case EVENT_TYPES.CREATE_GAME: {
+                    const {
+                        socket1,
+                        socket2,
+                        outCreateGamePlayer1JSON,
+                        outCreateGamePlayer2JSON,
+                    } = createGameCommand(inMessageData.indexRoom);
+
+
+                    const ws1 = socketWsDb.getClientWs(socket1)
+                    const ws2 = socketWsDb.getClientWs(socket2)
+
+                    ws1.send(outCreateGamePlayer1JSON)
+                    ws2.send(outCreateGamePlayer2JSON)
+
                     break;
                 }
                 case EVENT_TYPES.ADD_SHIPS: {

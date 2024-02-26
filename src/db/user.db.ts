@@ -1,6 +1,8 @@
-import { UserDbType } from "./types";
+import {UserDbType} from "./types";
 
 const defaultUser: UserDbType = {
+    gameId: null,
+    playerId: null,
     name: '',
     socket: '',
     index: 0,
@@ -19,7 +21,7 @@ class UserDb {
         return this.users.find((user) => user.socket === socketId) || defaultUser;
     }
 
-    getUserList()  {
+    getUserList() {
 
     }
 
@@ -27,8 +29,17 @@ class UserDb {
         this.users = [...this.users, newUser]
     }
 
-    updateUser(name: string, user: UserDbType) {
+    updateUser(name: string, updatedUserFields: Partial<UserDbType>) {
+        this.users = this.users.map((user) => {
+            if (user.name === name) {
+                return {
+                    ...user,
+                    ...updatedUserFields
+                }
+            }
 
+            return user
+        })
     }
 }
 

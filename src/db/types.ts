@@ -65,6 +65,8 @@ export type RoomUserType = {
 export type RoomDbType = {
     roomId: number;
     roomUsers: RoomUserType[];
+    shipPositions?: any[],
+    gameBoard?: any[]
 };
 
 export type UserData = {
@@ -73,10 +75,17 @@ export type UserData = {
 }
 
 export type UserDbType = {
-    name: string,
-    password: string,
-    index: number,
-    socket: string | null,
+    playerId: number | null;
+    gameId: number | null;
+    name: string;
+    password: string;
+    index: number;
+    socket: string | null;
+}
+
+export type WinnerDbType = {
+   name: string;
+   wins: number;
 }
 
 export type DB = {
@@ -84,6 +93,11 @@ export type DB = {
     rooms: RoomDbType[]
 }
 
+export type PlayerDbType = {
+    id: string;
+    socket: string;
+    gameId: string;
+}
 
 export interface IWS extends WebSocket {
     id: string;

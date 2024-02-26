@@ -9,6 +9,8 @@ export const loginCommand = (userData: UserData, socketId: string): string => {
     if (!user) {
         // user is not found in the db. Adding it to the DB
         const newUser: UserDbType = {
+            gameId: null,
+            playerId: null,
             name: userData.name,
             password: userData.password,
             socket: socketId,
