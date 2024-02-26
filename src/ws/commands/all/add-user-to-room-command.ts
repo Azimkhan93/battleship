@@ -14,6 +14,7 @@ export const addUserToRoomCommand = (
         if (!existingUserInRoom) {
             // if user is not in this room already, we add them to this room
             roomDb.addUserToRoom(roomId, {
+                socket: userData.socket,
                 name: userData.name,
                 index: userData.index
             });

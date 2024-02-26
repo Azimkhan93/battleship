@@ -13,9 +13,11 @@ export function createRoomCommand(userData: UserDbType): number | null {
 
     // user is not found in any room. Thus, they can create a new room
     const newRoom: RoomDbType = {
+        gameId: null,
         roomId: getRandomNumber(),
         roomUsers: [
             {
+                socket: userData.socket,
                 name: userData.name,
                 index: indexGenerator(),
             },

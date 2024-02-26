@@ -15,9 +15,6 @@ export type UserDataResponse = {
     errorText: string;
 };
 
-
-
-
 export type OutUpdRoomObject = {
     type: string;
     data: string | string[];
@@ -60,14 +57,23 @@ export type OutStartGameDataObject = {
 export type RoomUserType = {
     name: string;
     index: number;
+    socket: string | null;
 };
 
 export type RoomDbType = {
     roomId: number;
     roomUsers: RoomUserType[];
-    shipPositions?: any[],
-    gameBoard?: any[]
+    gameBoard?: any[];
+    player1?: PlayerType;
+    player2?: PlayerType;
+    gameId: number | null;
 };
+
+export type PlayerType = {
+    id: number;
+    socket: string;
+    ships: Ship[] | null;
+}
 
 export type UserData = {
     name: string;

@@ -21,10 +21,6 @@ class UserDb {
         return this.users.find((user) => user.socket === socketId) || defaultUser;
     }
 
-    getUserList() {
-
-    }
-
     addUser(newUser: UserDbType) {
         this.users = [...this.users, newUser]
     }

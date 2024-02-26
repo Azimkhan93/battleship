@@ -9,7 +9,7 @@ import {
     RoomDbType,
     OutUpdWinnerDataObject,
     RoomUserType,
-    IWS
+    IWS, Ship
 } from '../db/types';
 import {updateRoomCommand} from './commands/all/update-room-command';
 import {updateWinnersCommand} from './commands/all/update-winners-command';
@@ -24,6 +24,9 @@ import {userDb} from "../db/user.db";
 import {roomDb} from "../db/room.db";
 import {roomWsDb} from "../db/room-ws.db";
 import {socketWsDb} from "../db/socket-ws.db";
+import {turnCommand} from "./commands/gameRoom/turn-command";
+import {finishCommand} from "./commands/gameRoom/finish-command";
+import {addShipsCommand} from "./commands/gameRoom/add-ships-command";
 
 export const createWsServer = () => {
     const wsServer = new WebSocketServer({port: 3000});
@@ -57,7 +60,7 @@ export const createWsServer = () => {
                     const user = userDb.getUserBySocketId(socketId);
                     const roomId = createRoomCommand(user);
 
-                    if(roomId) {
+                    if (roomId) {
                         roomWsDb.addWebSocketClientToRoom(roomId, ws)
                     }
                     socketWsDb.addWebSocketClient(socketId, ws);
@@ -97,32 +100,51 @@ export const createWsServer = () => {
                     break;
                 }
                 case EVENT_TYPES.ADD_SHIPS: {
-                    const outStartGameJSON = startGameCommand(inMessageObject);
-                    ws.send(outStartGameJSON);
+                    const shipArray: Ship[] = JSON.parse(inMessageObject.data).ships;
+                    const playerId: number = JSON.parse(inMessageObject.data).indexPlayer;
+                    const room = roomDb.getRoomBySocketId(socketId)
+
+                    if (!room) {
+                        throw Error('No room found');
+                    }
+
+                    const {isBothPlayersSetUpShips} = addShipsCommand(room.roomId, playerId, shipArray);
+
+
+                    if (isBothPlayersSetUpShips) {
+                        const outTurnJSON = turnCommand(playerId);
+                        const outStartGameJSON = startGameCommand(playerId, shipArray);
+
+                        ws.send(outStartGameJSON);
+                        ws.send(outTurnJSON);
+                    }
+
                     break;
                 }
-                case EVENT_TYPES.START_GAME: {
-                    break;
-                }
-                case EVENT_TYPES.TURN: {
-                    break;
-                }
+
                 case EVENT_TYPES.ATTACK: {
-                    break;
-                }
-                case EVENT_TYPES.ATTACK_MISS: {
+                    // need to change the condition
+                    // if player1 or player2 do not have ships
+                    if (1) {
+                        const {
+                            socket1,
+                            socket2,
+                            outFinishPlayer1JSON,
+                            outFinishPlayer2JSON,
+                        } = finishCommand(1);
+
+                        const ws1 = socketWsDb.getClientWs(socket1)
+                        const ws2 = socketWsDb.getClientWs(socket2)
+
+                        ws1.send(outFinishPlayer1JSON)
+                        ws2.send(outFinishPlayer2JSON)
+
+                        const updateWinnersRes = updateWinnersCommand();
+                        sendAll(wsServer, updateWinnersRes);
+                    }
                     break;
                 }
                 case EVENT_TYPES.RANDOM_ATTACK: {
-                    break;
-                }
-                case EVENT_TYPES.RANDOM_ATTACK_SHOOT: {
-                    break;
-                }
-                case EVENT_TYPES.RANDOM_ATTACK_KILL: {
-                    break;
-                }
-                case EVENT_TYPES.FINISH: {
                     break;
                 }
                 default:
