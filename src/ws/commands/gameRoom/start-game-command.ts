@@ -1,6 +1,6 @@
-import { InMessageObject, OutMessageObject, OutStartGameDataObject, Ship } from '../../utilities/types';
+import { InMessageObject, OutMessageObject, OutStartGameDataObject, Ship } from '../../../db/types';
 
-export const startGameHandler = (inAddShipObject: InMessageObject) => {
+export const startGameCommand = (inAddShipObject: InMessageObject) => {
     const inShipsArr: Ship[] = JSON.parse(inAddShipObject.data).ships;
     const inIndexPlayer: number = JSON.parse(inAddShipObject.data).indexPlayer;
 

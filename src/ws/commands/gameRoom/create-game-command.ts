@@ -1,6 +1,6 @@
-import {  InMessageObject, OutCreateGameDataObject, OutMessageObject, OutUpdRoomDataObject } from '../../utilities/types';
-import { getRandomNumber } from '../../utilities/data';
-export const createGameHandler = (inAddUserObject: InMessageObject, roomsDataArr: OutUpdRoomDataObject[]) => {
+import {  InMessageObject, OutCreateGameDataObject, OutMessageObject, OutUpdRoomDataObject } from '../../../db/types';
+import { getRandomNumber } from '../../../db/data';
+export const createGameCommand = (inAddUserObject: InMessageObject, roomsDataArr: OutUpdRoomDataObject[]) => {
 const inIndexRoom: number = JSON.parse(inAddUserObject.data).indexRoom;
 const idGame: number = getRandomNumber();
 const idPlayer: number = getRandomNumber();

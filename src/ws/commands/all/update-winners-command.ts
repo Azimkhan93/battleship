@@ -1,6 +1,6 @@
-import { InMessageObject, OutMessageObject, OutUpdWinnerDataObject } from '../../utilities/types';
+import { InMessageObject, OutMessageObject, OutUpdWinnerDataObject } from '../../../db/types';
 
-export const updateWinnersHandler = (inLoginObject: InMessageObject, winnerData: OutUpdWinnerDataObject[]) => {
+export const updateWinnersCommand = (inLoginObject: InMessageObject, winnerData: OutUpdWinnerDataObject[]) => {
     const inName: string = JSON.parse(inLoginObject.data).name;
     const outUpdWinnerDataObject: OutUpdWinnerDataObject = {
         name: inName,

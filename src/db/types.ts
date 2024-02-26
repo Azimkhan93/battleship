@@ -8,7 +8,7 @@ export type InMessageObject = {
 
 export type OutMessageObject = InMessageObject;
 
-export type OutUserData = {
+export type UserDataResponse = {
     name: string;
     index: number;
     error: boolean;
@@ -57,22 +57,22 @@ export type OutStartGameDataObject = {
     currentPlayerIndex: number;
 };
 
-export type RoomUser = {
+export type RoomUserType = {
     name: string;
     index: number;
 };
 
-export type RoomData = {
+export type RoomDbType = {
     roomId: number;
-    roomUsers: RoomUser[];
+    roomUsers: RoomUserType[];
 };
 
 export type UserData = {
     name: string;
-    password: string
+    password: string;
 }
 
-export type UserDataDB = {
+export type UserDbType = {
     name: string,
     password: string,
     index: number,
@@ -80,11 +80,13 @@ export type UserDataDB = {
 }
 
 export type DB = {
-    users: UserDataDB[];
-    rooms: RoomData[]
+    users: UserDbType[];
+    rooms: RoomDbType[]
 }
 
 
 export interface IWS extends WebSocket {
     id: string;
-}  
+}
+
+export type OutUpdRoomDataObject = {}
