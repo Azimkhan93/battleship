@@ -1,3 +1,5 @@
+import WebSocket from 'ws';
+
 export type InMessageObject = {
     type: string;
     data: string;
@@ -81,3 +83,8 @@ export type DB = {
     users: UserDataDB[];
     rooms: RoomData[]
 }
+
+
+export interface IWS extends WebSocket {
+    id: string;
+}  
